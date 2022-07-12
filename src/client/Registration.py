@@ -1,12 +1,10 @@
 import rsa
 
-from src.server.Client_table import add_client
+
+def initiate_registration(pub_key, first_name, last_name, username, password):
+    send_to_server(rsa.encrypt(build_message(first_name, last_name
+                                             , username, password), pub_key))
 
 
-def receive_registration(message, private_key):
-    message = rsa.decrypt(message, private_key)
-    messages = str.split(message)
-    if messages[0] != "REGISTER":
-        print("Error in registration")
-    else:
-        add_client(messages[1], messages[2], messages[3], messages[4])
+def build_message(first_name, last_name, username, password):
+    return "REGISTER " + first_name + " " + last_name + " " + username + " " + password
