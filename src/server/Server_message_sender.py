@@ -6,4 +6,4 @@ def Server_message_sender(client_address,message):
 
 
 
-
+Server_message_sender('C:/Users/Ali/NDS_project/NS-project/src/client','ali akbar')
