@@ -33,8 +33,3 @@ def client_auth(client_user_name:str,client_pwd:bytes):
 
 
 
-    pass
-def find_path():
-    pass
-server_path= os.getcwd()
-print(server_path)
