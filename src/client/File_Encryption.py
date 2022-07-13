@@ -7,15 +7,21 @@ def generate_key_iv():
     key=get_random_bytes(16)
     iv=get_random_bytes(16)
     return key,iv
-def file_Encryption(file_address:str):
-    file_name=re.findall(r'\w+\.\w+',file_address)
-    with open(file_address,mode='rb') as file:
-        orginal_file=file.read()
+#def file_Encryption(file_address:str):
+ #   file_name=re.findall(r'\w+\.{0,1}\w+$',file_address)
+ #   with open(file_address,mode='rb') as file:
+ #       orginal_file=file.read()
+ #   key,iv=generate_key_iv()
+  #  cipher=AES.new(key, AES.MODE_CBC, iv)
+  #  enc=cipher.encrypt(pad(orginal_file,16,style='pkcs7'))
+ #   create()
+ #   insert(file_name[0],key,iv)
+  #  return enc
+def Encryption(file_name:str):
     key,iv=generate_key_iv()
     cipher=AES.new(key, AES.MODE_CBC, iv)
-    enc=cipher.encrypt(pad(orginal_file,16,style='pkcs7'))
+    enc_file_name=cipher.encrypt(pad(file_name,16,style='pkcs7'))
     create()
-    insert(file_name[0],key,iv)
-    return enc
-
+    insert(file_name,enc_file_name,key,iv)
+    return enc_file_name
 
