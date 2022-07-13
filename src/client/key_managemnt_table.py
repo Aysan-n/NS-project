@@ -33,9 +33,10 @@ def find_key(file_name):
         records=cursor.fetchall()
         cursor.close()
         connection.close()
+        return records
     except sqlite3.Error as error:
          print("Failed to read data from key_management_table)", error)
-    return records
+    
 
 
 
