@@ -1,12 +1,17 @@
 import rsa
 
-from src.server.Client_table import add_client
+from server.Client_table import add_client
 
 
 def receive_registration(message, private_key):
-    message = rsa.decrypt(message, private_key)
-    messages = str.split(message)
-    if messages[0] != "REGISTER":
+    if message['message_type'] != 'registration':
         print("Error in registration")
+        return
     else:
-        add_client(messages[1], messages[2], messages[3], messages[4])
+        message = message['cipher']
+
+        message = bytes.fromhex(message)
+        message = rsa.decrypt(message, private_key).decode()
+        messages = str.split(message)
+        print(messages[0], messages[1], messages[2], messages[3])
+        add_client(messages[0], messages[1], messages[2], messages[3])
