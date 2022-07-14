@@ -3,6 +3,7 @@ import threading
 import time
 
 from client.Messaging import serialize, deserialize
+from server.Authentication import authentication
 from server.Registration import receive_registration
 
 
@@ -30,10 +31,10 @@ class Messaging:
             print(message)
             self.reqs.append(message)
             self.connections.append(c)
-            print("appended")
-            c.close()
+            #print("appended")
 
     def send_message(self, message, c):
+        print("***")
         c.send(serialize(message))
 
     def handle_registration(self, request):
@@ -42,8 +43,12 @@ class Messaging:
     def handle(self, request, connection):
         if request['message_type'] == 'registration':
             self.handle_registration(request)
+
+        elif request['message_type'] == 'authentication':
+            authentication(self, connection)
         else:
             print("ERROR")
+        connection.close()
 
     def handle_tasks(self):
         while True:
@@ -52,7 +57,7 @@ class Messaging:
                 connection = self.connections.pop()
                 self.handle(request, connection)
             else:
-                print(len(self.reqs))
+                #print(len(self.reqs))
                 time.sleep(2)
 
     def start(self):
