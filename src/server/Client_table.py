@@ -85,13 +85,31 @@ def find_client(username):
         return error
 
 
-def table_contains(username):
-    print(username)
+def delete_key(username):
+    client_directory = sqlite3.connect('clients.db')
+    cursor = client_directory.cursor()
+    cursor.execute("DELETE FROM session_keys WHERE user_name = '" + username + "' ")
+    client_directory.commit()
+    client_directory.close()
+
+
+def table_contains_key(username):
+    client_directory = sqlite3.connect('clients.db')
+    cursor = client_directory.cursor()
+    cursor.execute("SELECT * FROM session_keys WHERE user_name = '" + username + "' ")
+    item = cursor.fetchone()
+    client_directory.close();
+    if item is None:
+        return False
+    else:
+        return True
+
+
+def table_contains_client(username):
     client_directory = sqlite3.connect('clients.db')
     cursor = client_directory.cursor()
     cursor.execute("SELECT * FROM clients WHERE username = '" + username + "' ")
     item = cursor.fetchone()
-    print(item)
     client_directory.close();
     if item is None:
         return False
