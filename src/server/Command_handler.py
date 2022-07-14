@@ -3,9 +3,12 @@ from Client_table import find_auth_user,delete_auth_user
 from seq_number_enc_dec import seq_Decryption
 import datetime
 import os
+import subprocess
 def server_command_handler(client_message):
     client_user_name=client_message['client_user_name']
     record=find_auth_user(client_user_name)
+    critical_path=os.getcwd()+'/src/sever/Repository/'+record[4]
+    cwd_total=os.getcwd()+'src/sever/Repository/'+record[4]+record[5]
     if len(record)==0:       ###عدم احراز اصالت کاربر
         return False
     current_time=datetime.datetime.now()
@@ -28,6 +31,8 @@ def server_command_handler(client_message):
         cwd_list=record[5].split('/')[1:]   ##################### جدول باید درست شود
         if path_list.count('..')>(len(cwd_list))-1:
             return False     #دسترسی غیر مجازی
+        elif len(lcs(critical_path,path)>0 and critical_path.find(path)==0):
+            return False   ######دسترسی غیر مجاز
     else:
         access_path=client_message['access_path']
         dest_path=client_message['dest_path']
@@ -36,7 +41,13 @@ def server_command_handler(client_message):
         cwd_list=record[5].split('/')[1:]   ##################### جدول باید درست شود
         if access_path_list.count('..')>(len(cwd_list))-1 or dest_path_list.count('..')>(len(cwd_list))-1:
             return False     #دسترسی غیر مجازی
-    critical_path=os.getcwd()+'src/sever/Repository/'+record[4]
+        elif (len(lcs(critical_path,access_path)>0 and critical_path.find(access_path)==0)) or (len(lcs(critical_path,dest_path)>0 and critical_path.find(dest_path)==0)):
+            return False    ###دسترسی غیر مجاز
+
+    
+    
+   
+    
 import subprocess
 command=['dir']
 #print(subprocess.call("der C:\\",shell=True))
@@ -47,7 +58,26 @@ command=['dir']
 #process.wait()
 #output, error = process.communicate()
 #print(error,   type(output))
-print(os.getcwd()+'src/sever/Repository/'+'u2546')
+
+def lcs(S,T):
+    m = len(S)
+    n = len(T)
+    counter = [[0]*(n+1) for x in range(m+1)]
+    longest = 0
+    lcs_set = set()
+    for i in range(m):
+        for j in range(n):
+            if S[i] == T[j]:
+                c = counter[i][j] + 1
+                counter[i+1][j+1] = c
+                if c > longest:
+                    lcs_set = set()
+                    longest = c
+                    lcs_set.add(S[i-c+1:i+1])
+                elif c == longest:
+                    lcs_set.add(S[i-c+1:i+1])
+
+    return lcs_set
 
 
     

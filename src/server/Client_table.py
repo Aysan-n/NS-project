@@ -29,27 +29,6 @@ def create_session_key_table():
 
     client_directory.commit()
     client_directory.close()
-<<<<<<< HEAD
-def delete_auth_user(client_user_name):  
-        connection=sqlite3.connect('clients.db')
-        cursor=connection.cursor()
-        sql_select_query ="""DELETE from session_keys where user_name=?"""
-        cursor.execute(sql_select_query, (client_user_name,))
-        connection.commit()
-        cursor.close()
-        connection.close()
-        
-def find_auth_user(client_user_name):  
-        connection=sqlite3.connect('clients.db')
-        cursor=connection.cursor()
-        sql_select_query ='''SELECT * FROM session_keys WHERE user_name=?'''
-        cursor.execute(sql_select_query, (client_user_name,))
-        records=cursor.fetchall()
-        cursor.close()
-        connection.close()
-        return records
-def add_session_key(user_name, session_key,seq_num,joiningDate):
-=======
 
 
 def delete_auth_user(client_user_name):
@@ -74,7 +53,6 @@ def find_auth_user(client_user_name):
 
 
 def add_session_key(user_name, session_key, seq_num, joiningDate):
->>>>>>> 4b7ec9258d37b3dbed1dde0b23bf1da0db9f1342
     client_directory = sqlite3.connect('clients.db')
     cursor = client_directory.cursor()
     sqlite_insert_with_param = """INSERT INTO session_keys
