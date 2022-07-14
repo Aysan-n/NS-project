@@ -21,7 +21,7 @@ def server_command_handler(client_message):
     dec_seq_num=seq_Decryption(enc_seq_number,session_key)
     if dec_seq_num!=seq_number+1:
         return False     ##کاریر نامعتبر
-    #cwd_total=os.getcwd()+'src/sever/Repository/'+####record[4]secret_username+record[5]###cwd
+    cwd_total=os.getcwd()+'src/sever/Repository/'+record[4]+record[5]
     if client_message['command_type']!='mv':
         path=client_message['path']
         path_list=path.split('/')
@@ -36,10 +36,10 @@ def server_command_handler(client_message):
         cwd_list=record[5].split('/')[1:]   ##################### جدول باید درست شود
         if access_path_list.count('..')>(len(cwd_list))-1 or dest_path_list.count('..')>(len(cwd_list))-1:
             return False     #دسترسی غیر مجازی
-    
+    critical_path=os.getcwd()+'src/sever/Repository/'+record[4]
 import subprocess
 command=['dir']
-print(subprocess.call("der C:\\",shell=True))
+#print(subprocess.call("der C:\\",shell=True))
 #from subprocess import check_output
 #a=check_output("dir C:\\", shell=True).decode()
 #print(type(a))
@@ -47,7 +47,7 @@ print(subprocess.call("der C:\\",shell=True))
 #process.wait()
 #output, error = process.communicate()
 #print(error,   type(output))
-  
+print(os.getcwd()+'src/sever/Repository/'+'u2546')
 
 
     
