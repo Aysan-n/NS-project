@@ -1,8 +1,8 @@
 import re
 from File_Encryption import Encryption
 from key_managemnt_table import find_file
-def command_handler(command:str):
-    command_string=command
+def command_handler(client_command:str,seq_num:int,session_key:bytes):
+    command_string=client_command
     support_command=['mkdir','touch','cd','ls','rm','mv']
     client_command=re.findall(r'^\w+',command_string)
     if client_command not in support_command:
@@ -23,7 +23,7 @@ def command_handler(command:str):
                 else:
                     enc_dir_name+=[record[1]]
         enc_path='/'.join(enc_dir_name)
-        client_message={'message_type':client_command,'command_type':client_command,'path':enc_path}
+        client_message={'message_type':'client_command','command':client_command+enc_path}
         ######################### فرستادن پیام ++++ می توان بر روی نتیجه حاصل عملیات انجام داد
     if client_command=='rm':
         path=re.findall(r'\s-{0,1}\w{0,1}\s{0,1}(.+$)',command_string)
@@ -40,13 +40,9 @@ def command_handler(command:str):
                     enc_dir_name+=[record[1]]
         enc_path='/'.join(enc_dir_name)
         command_flag=re.findall(r'\s(-{0,1}\w{0,1})\s{0,1}.+$',command_string)
-        if len(command_flag):
-            client_message={'message_type':client_command,'command_type':client_command,'command_flag':command_flag[0],'path':enc_path}
+        client_message={'message_type':'client_command','command':client_command+command_flag[0]+enc_path}
             #####################
-        else:
-            client_message={'message_type':client_command,'command_type':client_command,'command_flag':'','path':enc_path}
-            #######################################
-    if client_command=='rm':
+    if client_command=='mv':
         access_path=re.findall(r'\s-{0,1}\w{0,1}\s{0,1}(.+)\s',command_string)
         dest_path=re.findall(r'\s-{0,1}\w{0,1}\s{0,1}.+\s(.+)',command_string)
         access_directory_name=access_path[0].split('/')
@@ -74,9 +70,6 @@ def command_handler(command:str):
         enc_access_path='/'.join(enc_access_dir_name)
         enc_dest_path='/'.join(enc_des_dir_name)
         command_flag=re.findall(r'\s(-{0,1}\w{0,1})\s{0,1}.+$',command_string)
-        if len(command_flag):
-            client_message={'message_type':client_command,'command_type':client_command,'command_flag':command_flag[0],'access_path':enc_access_path,'dest_path':enc_dest_path}
-            #####################
-        else:
-            client_message={'message_type':client_command,'command_type':client_command,'command_flag':'','dest_path':enc_dest_path}
-            #######################################          
+        client_message={'message_type':'client_command','command':client_command+command_flag[0]+enc_access_path+enc_dest_path}
+        ################################
+        
