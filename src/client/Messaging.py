@@ -12,11 +12,6 @@ class Messaging:
         print("Client socket created")
         self.socket.connect(('', port))
 
-    def create_socket(self, port):
-        self.socket = socket.socket()
-        print("Client socket created")
-        self.socket.connect(('', port))
-
     def send_message(self, message):
         self.socket.send(serialize(message))
 
