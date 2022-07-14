@@ -64,11 +64,11 @@ def add_session_key(user_name, session_key, seq_num, joiningDate):
     client_directory.close()
 
 
-def add_client(first_name, last_name, username, password):
+def add_client(first_name, last_name, username, password, enc_username):
     client_directory = sqlite3.connect('clients.db')
     cursor = client_directory.cursor()
     cursor.execute("INSERT INTO clients VALUES ('" + first_name + "', '" + last_name + "', '" +
-                   username + "' , '" + password + "');")
+                   username + "' , '" + enc_username + "' , '" + password + "');")
     client_directory.commit()
     client_directory.close()
 
@@ -83,3 +83,19 @@ def find_client(username):
     except:
         error = 'Failed to find user'
         return error
+
+
+def table_contains(username):
+    print(username)
+    client_directory = sqlite3.connect('clients.db')
+    cursor = client_directory.cursor()
+    cursor.execute("SELECT * FROM clients WHERE username = '" + username + "' ")
+    item = cursor.fetchone()
+    print(item)
+    client_directory.close();
+    if item is None:
+        return False
+    else:
+        return True
+
+
