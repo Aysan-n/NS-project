@@ -24,4 +24,9 @@ def Encryption(file_name:str):
     create()
     insert(file_name,enc_file_name,key,iv)
     return enc_file_name
+def seq_Encryption(seq_num:int,key:bytes):
+    seq_num=bytes(str(seq_num),'utf-8')
+    cipher=AES.new(key, AES.MODE_ECB)
+    enc_seq_num=cipher.encrypt(pad(seq_num,16,style='pkcs7'))
+    return enc_seq_num  ##bytes
 
