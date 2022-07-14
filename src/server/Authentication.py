@@ -1,21 +1,21 @@
 import rsa
+from Crypto.Random import get_random_bytes
 
-from Client_table import find_client, create_session_key_table, add_session_key
+from Client_table import find_client, create_session_key_table, add_session_key, table_contains_key, delete_key
 # from Crypto.Random import get_random_bytes
 from Server_message_sender import Server_message_sender
 from Server_message_receiver import Server_message_receiver
 import hashlib
 import datetime
 import random
-import os
 
 from client.Messaging import deserialize
+from server.seq_number_enc_dec import seq_Encryption
 
 
 def authentication(messaging, connection):  ########################
 
-    # server_nance=get_random_bytes(10)
-    server_nance = os.urandom(10)
+    server_nance=get_random_bytes(10)
 
     ################    درصورت نیازف تبدیلی بر روی پیام دریافت شده
     server_message = {'message_type': 'authentication', 'server_nance': server_nance.hex()}
@@ -40,7 +40,7 @@ def authentication(messaging, connection):  ########################
             try:
                 create_session_key_table()
             except:
-                print("Tabl")
+                pass
 
             time_stamp = datetime.datetime.now()
             seq_number = random.randint(0, 2047)
@@ -48,29 +48,36 @@ def authentication(messaging, connection):  ########################
             session_key = rsa.decrypt(encrypted_session_key, messaging.private_key)
 
             # UNCOMMENT!!!!!!
+            print("**** "+client_info[2])
+
+            if table_contains_key(client_info[2]):
+                delete_key(client_info[2])
+
             add_session_key(client_info[2], session_key, seq_number, time_stamp)
+
             # UNCOMMENT!!!!!!
 
             ################### عملیات رمز بر روی seq numb
 
-            print(client_info[4])
+            #print(client_info[4])
 
             hash_string = (hashlib.sha1(client_info[4].encode() + seq_number.to_bytes(2, 'big'))).hexdigest()
 
-            enc_string = 
+            enc_string = seq_Encryption(seq_number, session_key)
 
             server_message = {'message_type': 'authentication', 'status': 'ok', 'hash_string': hash_string,
-                              'enc_str': enc_string}
+                              'enc_str': enc_string.hex()}
 
-            messaging.send_message(server_message)
+            messaging.send_message(server_message, connection)
             # Server_message_sender(client_address,server_message)
+            print("Authentication Successful")
 
         else:
             server_message = {'message_type': 'authentication', 'status': 'error'}
-            messaging.send_message(server_message)
+            messaging.send_message(server_message, connection)
             # Server_message_sender(client_address,server_message)
 
     else:
         server_message = {'message_type': 'authentication', 'status': 'error'}
-        messaging.send_message(server_message)
+        messaging.send_message(server_message, connection)
         # Server_message_sender(client_address,server_message)
