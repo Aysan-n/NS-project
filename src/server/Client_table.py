@@ -22,6 +22,7 @@ def create_session_key_table():
             session_key text,
             seq_num  INTEGER,
             joiningDate timestamp
+            cwd text
             );""")
 
     client_directory.commit()

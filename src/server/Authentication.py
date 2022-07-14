@@ -23,7 +23,7 @@ def authentication(client_message): ########################
             create_session_key_table()
             time_stamp=datetime.datetime.now()
             seq_number=random.randint(0,100000)
-            add_session_key(client_info[2],session_key,seq_number,time_stamp)
+            add_session_key(client_info[2],session_key,seq_number,time_stamp,'/')
             ################### عملیات رمز بر روی seq numb
             hash_string=(hashlib.sha1(client_info[4].encode()+seq_number.encode())).hexdigest()
             server_message={'message_type':'authentication','status':'ok','hash_string':hash_string,'enc_str':enc_string}
