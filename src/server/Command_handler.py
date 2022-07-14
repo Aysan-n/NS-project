@@ -7,8 +7,8 @@ import subprocess
 def server_command_handler(client_message):
     client_user_name=client_message['client_user_name']
     record=find_auth_user(client_user_name)
-    critical_path=os.getcwd()+'/src/sever/Repository/'+record[4]
-    cwd_total=os.getcwd()+'src/sever/Repository/'+record[4]+record[5]
+    critical_path=os.getcwd()+'/src/server/Repository/'+record[4]
+    
     if len(record)==0:       ###عدم احراز اصالت کاربر
         return False
     current_time=datetime.datetime.now()
@@ -24,7 +24,6 @@ def server_command_handler(client_message):
     dec_seq_num=seq_Decryption(enc_seq_number,session_key)
     if dec_seq_num!=seq_number+1:
         return False     ##کاریر نامعتبر
-    cwd_total=os.getcwd()+'src/sever/Repository/'+record[4]+record[5]
     if client_message['command_type']!='mv':
         path=client_message['path']
         path_list=path.split('/')
@@ -43,8 +42,41 @@ def server_command_handler(client_message):
             return False     #دسترسی غیر مجازی
         elif (len(lcs(critical_path,access_path)>0 and critical_path.find(access_path)==0)) or (len(lcs(critical_path,dest_path)>0 and critical_path.find(dest_path)==0)):
             return False    ###دسترسی غیر مجاز
+    cwd_total=os.getcwd()+'/src/server/Repository/'+record[4]+record[5]
+def ls_handler(cwd_total,client_message):
+    path=client_message['path']
+    if len(path)==0:
+        pass
+    elif path[0]=='/':
+        path=path[1:]
+    cwd_total=cwd_total.replace('/','\\')
+    path=path.replace('/','\\')
+    with cd(cwd_total):
+        process=subprocess.Popen(["dir","%s" %path],shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        process.wait()
+    output,error=process.communicate()
+    if len(error)!=0:
+        return False   #دستور دچار خطا شد  
+    else:
+        pass  ########## خروجی رو درست کن سپس بفرست  
+def cd_handler(cwd_total,client_message):
+    path=client_message['path'] 
+     
 
-    
+
+
+
+class cd:
+    """Context manager for changing the current working directory"""
+    def __init__(self, newPath):
+        self.newPath = os.path.expanduser(newPath)
+
+    def __enter__(self):
+        self.savedPath = os.getcwd()
+        os.chdir(self.newPath)
+
+    def __exit__(self, etype, value, traceback):
+        os.chdir(self.savedPath) 
     
    
     

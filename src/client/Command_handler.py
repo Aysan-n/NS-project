@@ -11,11 +11,18 @@ def command_handler(command:str,seq_num:int,session_key:bytes,client_user_name:s
         return False
     if client_command in ['mkdir','touch','cd','ls']:
         path=re.findall(r'\s(.+$)',command_string)
+        if len(path)==0 and client_command in ['mkdir','touch','cd']:
+            return False
+        elif  len(path)==0 and client_command=='ls':
+            client_message={'message_type':'client_command','command':client_command,'path':'','command_type':client_command,'enc_seq_num':enc_seq_num,'client_user_name':client_user_name}
+            ##################
+            return True   
         directory_name=path[0].split('/')
         enc_dir_name=[]
         for dir_name in directory_name:
             if dir_name=='..' or dir_name=='.':
                 enc_dir_name+=[dir_name]
+            
             else:
                 record=find_file(dir_name)
                 if len(record)==0 and (client_command=='cd' or client_command=='ls'):
@@ -74,4 +81,5 @@ def command_handler(command:str,seq_num:int,session_key:bytes,client_user_name:s
         command_flag=re.findall(r'\s(-{0,1}\w{0,1})\s{0,1}.+$',command_string)
         client_message={'message_type':'client_command','command':client_command+command_flag[0]+enc_access_path+enc_dest_path,'access_path':enc_access_path,'dest_path':enc_dest_path,'command_type':client_command,'enc_seq_num':enc_seq_num,'client_user_name':client_user_name}
         ################################
+        
         
