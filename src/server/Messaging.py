@@ -2,9 +2,10 @@ import socket
 import threading
 import time
 
+from Authentication import authentication
+from Command_handler import server_command_handler
+from Registration import receive_registration
 from client.Messaging import serialize, deserialize
-from server.Authentication import authentication
-from server.Registration import receive_registration
 
 
 class Messaging:
@@ -33,22 +34,50 @@ class Messaging:
             self.connections.append(c)
             #print("appended")
 
+
     def send_message(self, message, c):
-        print("***")
+        print(message)
         c.send(serialize(message))
 
-    def handle_registration(self, request):
-        receive_registration(request, self.private_key)
+    def handle_registration(self, connection, request):
+        receive_registration(self, connection, request, self.private_key)
 
     def handle(self, request, connection):
         if request['message_type'] == 'registration':
-            self.handle_registration(request)
+            self.handle_registration(connection, request)
+            message = connection.recv(2048)
+            if message != ''.encode():
+                message = deserialize(message)
+                print(message)
+                self.reqs.append(message)
+                self.connections.append(connection)
+            else:
+                connection.close()
 
         elif request['message_type'] == 'authentication':
             authentication(self, connection)
+            message = connection.recv(2048)
+            if message != ''.encode():
+                message = deserialize(message)
+                print(message)
+                self.reqs.append(message)
+                self.connections.append(connection)
+            else:
+                connection.close()
+
+        elif request['message_type'] == 'client_command':
+            server_command_handler(connection, request)
+            message = connection.recv(2048)
+            if message != ''.encode():
+                message = deserialize(message)
+                print(message)
+                self.reqs.append(message)
+                self.connections.append(connection)
+            else:
+                connection.close()
         else:
             print("ERROR")
-        connection.close()
+
 
     def handle_tasks(self):
         while True:
@@ -64,3 +93,4 @@ class Messaging:
         thread = threading.Thread(target=self.start_receiving, args=())
         thread.start()
         self.handle_tasks()
+
