@@ -49,7 +49,7 @@ def command_handler(command:str,seq_num:int,session_key:bytes,client_user_name:s
                     enc_dir_name+=[record[1]]
         enc_path='/'.join(enc_dir_name)
         command_flag=re.findall(r'\s(-{0,1}\w{0,1})\s{0,1}.+$',command_string)
-        client_message={'message_type':'client_command','command':client_command+command_flag[0]+enc_path,'path':enc_path,'command_type':client_command,'enc_seq_num':enc_seq_num,'client_user_name':client_user_name}
+        client_message={'message_type':'client_command','command':client_command+command_flag[0]+enc_path,'path':enc_path,'command_flag':command_flag[0],'command_type':client_command,'enc_seq_num':enc_seq_num,'client_user_name':client_user_name}
             #####################
     if client_command=='mv':
         access_path=re.findall(r'\s-{0,1}\w{0,1}\s{0,1}(.+)\s',command_string)
