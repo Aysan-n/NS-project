@@ -46,22 +46,7 @@ def server_command_handler(client_message):
         elif (len(lcs(critical_path,access_path)>0 and critical_path.find(access_path)==0)) or (len(lcs(critical_path,dest_path)>0 and critical_path.find(dest_path)==0)):
             return False    ###دسترسی غیر مجاز
     cwd_total=os.getcwd()+'/src/server/Repository/'+client_record[3]+record[5]    
-def ls_handler(cwd_total,client_message):
-    path=client_message['path']
-    if len(path)==0:
-        pass
-    elif path[0]=='/':
-        path=path[1:]
-    cwd_total=cwd_total.replace('/','\\')
-    path=path.replace('/','\\')
-    with cd(cwd_total):
-        process=subprocess.Popen(["dir","%s" %path],shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        process.wait()
-    output,error=process.communicate()
-    if len(error)!=0:
-        return False   #دستور دچار خطا شد  
-    else:
-        pass  ########## خروجی رو درست کن سپس بفرست  
+ 
 
 
 def server_command_handler(connection, client_message):
