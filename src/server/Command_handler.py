@@ -106,8 +106,12 @@ def touch_handler(cwd_total,client_message):
         return False    ########### خطای اجرا کد
     return True
 
-def mkdir_handler():
-    pass
+def mkdir_handler(cwd_total,client_message):
+    path=client_message['path']
+    if path[0]=='/':
+        path=path[1:]
+    with cd(cwd_total):
+        return os.makedirs(path)
 
 
 
