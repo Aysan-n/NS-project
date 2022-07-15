@@ -1,4 +1,5 @@
 import sqlite3
+
 def create():
     try:
         connection=sqlite3.connect('key_management.db')
@@ -11,14 +12,14 @@ def create():
         print("Failed to connect sqliteDB", error)
 
     
-def insert(file_name,enc_file_name,key,iv):
+def insert(file_name, enc_file_name, key, iv):
     try:
-        connection=sqlite3.connect('key_management.db')
-        cursor=connection.cursor()
-        sqlite_insert_with_param='''INSERT TABLE key_management_table(file_name,enc_file_name,key,iv)
-                      VALUES (?, ?, ?);'''
-        data_tuple = (file_name,enc_file_name,key,iv)
-        cursor.execute(sqlite_insert_with_param, data_tuple)
+        connection = sqlite3.connect('key_management.db')
+        cursor = connection.cursor()
+        # print("INSERT INTO key_management_table VALUES ('" + file_name + "', '" + enc_file_name +
+        #                             # "', '" + key.hex() + "' , '" + iv.hex() + "');")
+        cursor.execute("INSERT INTO key_management_table VALUES ('" + file_name + "', '" + enc_file_name +
+                                    "', '" + key.hex() + "' , '" + iv.hex() + "');")
         connection.commit()
         connection.close()
     except sqlite3.Error as error:
@@ -48,6 +49,8 @@ def find_file(file_name):
         return records
     except sqlite3.Error as error:
          print("Failed to read data from key_management_table)", error)  
+
+
 
 
 
