@@ -1,6 +1,6 @@
 import rsa
 from Crypto.Random import get_random_bytes
-
+import json
 from Client_table import find_client, create_session_key_table, add_session_key, table_contains_key, delete_key
 # from Crypto.Random import get_random_bytes
 import hashlib
@@ -8,7 +8,12 @@ import datetime
 import random
 
 from seq_number_enc_dec import seq_Encryption
-from client.Messaging import deserialize
+def serialize(message):
+    return json.dumps(message).encode()
+
+
+def deserialize(message):
+    return json.loads(message.decode())
 
 
 def authentication(messaging, connection):  ########################

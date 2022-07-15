@@ -226,14 +226,24 @@ def mv_handler(cwd_total,client_message):
             process=subprocess.Popen(['move','%s' %access_path,'%s' %dest_path],shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
             process.wait()
             output,error=process.communicate()
-            if len(error)==0:
+            if len(error)!=0:
                return False
             else:
                return True
         except:
             return False
     else:
-        pass
+        try:
+            access_path+='.txt'
+            process=subprocess.Popen(['move','%s' %access_path,'%s' %dest_path],shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            process.wait()
+            output,error=process.communicate()
+            if len(error)!=0:
+                return False
+            else:
+                return True
+        except:
+            return False
 
 
 

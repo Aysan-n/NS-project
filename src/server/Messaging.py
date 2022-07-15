@@ -1,11 +1,16 @@
 import socket
 import threading
 import time
-
+import json
 from Authentication import authentication
 from Command_handler import server_command_handler
 from Registration import receive_registration
-from client.Messaging import serialize, deserialize
+def serialize(message):
+    return json.dumps(message).encode()
+
+
+def deserialize(message):
+    return json.loads(message.decode())
 
 
 class Messaging:
@@ -93,4 +98,10 @@ class Messaging:
         thread = threading.Thread(target=self.start_receiving, args=())
         thread.start()
         self.handle_tasks()
+def serialize(message):
+    return json.dumps(message).encode()
+
+
+def deserialize(message):
+    return json.loads(message.decode())
 

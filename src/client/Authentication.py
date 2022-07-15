@@ -4,7 +4,7 @@ import rsa
 from Crypto.Random import get_random_bytes
 import hashlib
 
-from server.seq_number_enc_dec import seq_Decryption
+from File_Decryption import seq_Decryption
 
 
 def client_auth(messaging, public_key, client_user_name: str, client_pwd: bytes):

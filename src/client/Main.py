@@ -3,9 +3,9 @@ import time
 from rsa import PublicKey
 
 from Command_handler import command_handler
-from client.Authentication import client_auth
-from client.Messaging import Messaging
-from client.Registration import initiate_registration
+from Authentication import client_auth
+from Messaging import Messaging
+from Registration import initiate_registration
 import os
 import rsa
 
@@ -16,12 +16,12 @@ import rsa
 #     65537)
 
 
-with open('/Users/Aysan/Downloads/NS-project-main 3/src/client/public_key.pem') as file:
+with open(os.getcwd()+'/src/client/public_key.pem') as file:
     data = file.read()
 public_key = rsa.PublicKey.load_pkcs1_openssl_pem(data)
 
 messaging = Messaging()
-messaging.create_socket(8080)
+messaging.create_socket(2548)
 
 initiate_registration(messaging, public_key, "Aysan", "Nishai", "Ays", "ays123")
 
