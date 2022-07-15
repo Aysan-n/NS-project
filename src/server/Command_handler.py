@@ -1,5 +1,5 @@
 from tkinter.tix import TEXT
-from Client_table import find_auth_user,delete_auth_user,update_cwd
+from Client_table import find_auth_user,delete_auth_user,update_cwd,find_client
 from seq_number_enc_dec import seq_Decryption
 import datetime
 import os
@@ -7,7 +7,8 @@ import subprocess
 def server_command_handler(client_message):
     client_user_name=client_message['client_user_name']
     record=find_auth_user(client_user_name)
-    critical_path=os.getcwd()+'/src/server/Repository/'+record[4]
+    client_record=find_client(client_user_name)
+    critical_path=os.getcwd()+'/src/server/Repository/'+client_record[3]
     
     if len(record)==0:       ###عدم احراز اصالت کاربر
         return False
@@ -42,7 +43,7 @@ def server_command_handler(client_message):
             return False     #دسترسی غیر مجازی
         elif (len(lcs(critical_path,access_path)>0 and critical_path.find(access_path)==0)) or (len(lcs(critical_path,dest_path)>0 and critical_path.find(dest_path)==0)):
             return False    ###دسترسی غیر مجاز
-    cwd_total=os.getcwd()+'/src/server/Repository/'+record[4]+record[5]
+    cwd_total=os.getcwd()+'/src/server/Repository/'+client_record[3]+record[5]    
 def ls_handler(cwd_total,client_message):
     path=client_message['path']
     if len(path)==0:
