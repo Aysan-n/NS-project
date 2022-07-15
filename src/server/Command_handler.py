@@ -232,10 +232,89 @@ def mv_handler(cwd_total,client_message):
         except:
             return False
 
+        
+        
+        
+ def ls_handler_linux(cwd_total, client_message):
+    path = client_message['path']
+    if len(path) == 0:
+        pass
+    elif path[0] == '/':
+        path = path[1:]
+    with cd(cwd_total):
+        process = subprocess.Popen(["ls","-l", "%s" % path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process.wait()
+    output, error = process.communicate()
+    if len(error) != 0:
+        return False  # دستور دچار خطا شد
+    else:
+         result=re.sub(r'.*\r\n\r\n','',output.decode())
+         result=re.sub(r'^\s{0,1}.*?\.\r\n','',result)  ########## خروجی رو درست کن سپس بفرست
+         print(result)
 
+def rm_handler_linux(cwd_total,client_message):
+    path=client_message['path']
+    if path[0]=='/':
+        path=path[1:]
+    path=os.path.join(cwd_total,path)
+    if client_message['command_flag'] == '-r':
+        process=subprocess.Popen(['rm','-rf','%s' %path],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        process.wait()
+        output,error=process.communicate()
+        print(error.decode())
+        if len(error)==0:
 
+            return False
+        else:
+            return True
+    try:
+        print("***")
+        os.remove(path+'.txt')
+        return True
+    except:
+        print("**")
+        return False
+        
 
+def mv_handler_linux(cwd_total,client_message):
+    access_path=client_message['access_path']
+    dest_path=client_message['dest_path']
+    if access_path[0]=='/':
+        access_path=access_path[1:]
+    if dest_path[0]=='/':
+        dest_path=dest_path[1:]
+    access_path=os.path.join(cwd_total,access_path)
 
+    print(re.findall(r'(.*)//\w+$',access_path))
+
+    dest_path_from_access_path=re.findall(r'(.*)/\w+$',access_path)[0]
+    dest_path=os.path.join(dest_path_from_access_path,dest_path)
+    if client_message['command_flag']=='-r':
+        try:
+            process=subprocess.Popen(['mv','%s' %access_path,'%s' %dest_path], shell=True, stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            process.wait()
+            output,error=process.communicate()
+            if len(error)!=0:
+                print(error.decode())
+                return False
+            else:
+               return True
+        except:
+            return False
+    else:
+        try:
+            access_path+='.txt'
+            process=subprocess.Popen(['mv','%s' %access_path,'%s' %dest_path],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            process.wait()
+            output,error=process.communicate()
+            if len(error)!=0:
+                print(error.decode())
+                return False
+            else:
+                return True
+        except:
+            print(error.decode())
+            return False
 
 
 
