@@ -366,6 +366,43 @@ def lcs(S, T):
 
 print(os.getcwd())
 
+
+
+#######################################################
+def mv_handler(cwd_total,client_message):
+    access_path=client_message['access_path']
+    dest_path=client_message['dest_path']
+    if access_path[0]=='/':
+        access_path=access_path[1:]
+    if dest_path[0]=='/':
+        dest_path=dest_path[1:]    
+    access_path=os.path.join(cwd_total,access_path)
+    access_path=access_path.replace('/','\\')
+    dest_path=os.path.join(cwd_total,dest_path)
+    dest_path=dest_path.replace('/','\\')
+    if client_message['command_flag']=='-r':
+        try:
+            process=subprocess.Popen(['move','%s' %access_path,'%s' %dest_path],shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            process.wait()
+            output,error=process.communicate()
+            if len(error)!=0:
+               return False
+            else:
+               return True
+        except:
+            return False
+    else:
+        try:
+            access_path+='.txt'
+            process=subprocess.Popen(['move','%s' %access_path,'%s' %dest_path],shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            process.wait()
+            output,error=process.communicate()
+            if len(error)!=0:
+                return False
+            else:
+                return True
+        except:
+            return False
     
 
 
