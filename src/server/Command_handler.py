@@ -132,7 +132,7 @@ def ls_handler(cwd_total, client_message):
         return False  # دستور دچار خطا شد
     else:
          result=re.sub(r'.*\r\n\r\n','',output.decode())
-         result=re.sub(r'.*\w+\.','',result)  ########## خروجی رو درست کن سپس بفرست
+         result=re.sub(r'^\s{0,1}.*?\.\r\n','',result)  ########## خروجی رو درست کن سپس بفرست
          print(result)
 
 
