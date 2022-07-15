@@ -3,14 +3,12 @@ from Crypto.Random import get_random_bytes
 
 from Client_table import find_client, create_session_key_table, add_session_key, table_contains_key, delete_key
 # from Crypto.Random import get_random_bytes
-from Server_message_sender import Server_message_sender
-from Server_message_receiver import Server_message_receiver
 import hashlib
 import datetime
 import random
 
+from seq_number_enc_dec import seq_Encryption
 from client.Messaging import deserialize
-from server.seq_number_enc_dec import seq_Encryption
 
 
 def authentication(messaging, connection):  ########################
@@ -53,7 +51,7 @@ def authentication(messaging, connection):  ########################
             if table_contains_key(client_info[2]):
                 delete_key(client_info[2])
 
-            add_session_key(client_info[2], session_key, seq_number, time_stamp)
+            add_session_key(client_info[2], session_key, seq_number, time_stamp, "/")
 
             # UNCOMMENT!!!!!!
 
@@ -81,3 +79,4 @@ def authentication(messaging, connection):  ########################
         server_message = {'message_type': 'authentication', 'status': 'error'}
         messaging.send_message(server_message, connection)
         # Server_message_sender(client_address,server_message)
+
