@@ -20,13 +20,15 @@ def generate_key_iv():
 def Encryption(file_name:str):
     key,iv=generate_key_iv()
     cipher=AES.new(key, AES.MODE_CBC, iv)
-    enc_file_name=cipher.encrypt(pad(file_name,16,style='pkcs7'))
-    create()
+    enc_file_name=cipher.encrypt(pad(file_name.encode(),16,style='pkcs7')).hex()
+    print("File name ", file_name)
     insert(file_name,enc_file_name,key,iv)
     return enc_file_name
+
 def seq_Encryption(seq_num:int,key:bytes):
     seq_num=bytes(str(seq_num),'utf-8')
     cipher=AES.new(key, AES.MODE_ECB)
     enc_seq_num=cipher.encrypt(pad(seq_num,16,style='pkcs7'))
-    return enc_seq_num  ##bytes
+    return enc_seq_num.hex()  ##bytes
+
 
