@@ -39,6 +39,15 @@ def delete_auth_user(client_user_name):
     connection.commit()
     cursor.close()
     connection.close()
+def update_cwd(client_user_name,new_cwd):
+    connection = sqlite3.connect('clients.db')
+    cursor = connection.cursor()
+    sql_select_query =  """Update session_keys set cwd=? where user_name= ?"""
+    data = (new_cwd,client_user_name)
+    cursor.execute(sql_select_query,data)
+    connection.commit()
+    cursor.close()
+    connection.close()    
 
 
 def find_auth_user(client_user_name):

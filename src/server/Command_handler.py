@@ -1,5 +1,5 @@
 from tkinter.tix import TEXT
-from Client_table import find_auth_user,delete_auth_user
+from Client_table import find_auth_user,delete_auth_user,update_cwd
 from seq_number_enc_dec import seq_Decryption
 import datetime
 import os
@@ -59,15 +59,60 @@ def ls_handler(cwd_total,client_message):
         return False   #دستور دچار خطا شد  
     else:
         pass  ########## خروجی رو درست کن سپس بفرست  
-def cd_handler(cwd_total,client_message):
+
+def cd_handler(cwd_total,critical_path,client_message):
+    savedPath=os.getcwd()
+    os.chdir(cwd_total)
     path=client_message['path'] 
-     
+    if path[0]=='/':
+        path=path[1:]
+    path=path.replace('/','\\')
+    os.chdir(path)
+    new_cwd=os.getcwd()
+    os.chdir(savedPath)
+    critical_path=critical_path.replace('/','\\')
+    critical_path=critical_path.split('\\')
+    new_cwd=new_cwd.split('\\')
+    new_cwd=new_cwd[len(critical_path):]
+    new_cwd='/'+'/'.join(new_cwd)
+    client_user_name=client_message['client_user_name']
+    update_cwd(client_user_name,new_cwd)
+    return True
+
+def touch_handler(cwd_total,client_message):
+    
+    path=client_message['path'] 
+    if path[0]=='/':
+        path=path[1:]
+    path=path.replace('/','\\')
+    path=path.split('\\')
+    file_name=path.pop()
+    if len(path)==0:
+        savedPath=os.getcwd()
+        os.chdir(cwd_total)
+        new_path=os.getcwd()
+    else:
+        savedPath=os.getcwd()
+        os.chdir(cwd_total)
+        path='\\'.join(path)
+        os.chdir(path)
+        new_path=os.getcwd()
+    os.chdir(savedPath)
+    with cd(new_path):
+        process=subprocess.Popen('type nul >> "%s.txt"' %file_name,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        process.wait()
+    output,error=process.communicate()
+    if len(error)>0:
+        return False    ########### خطای اجرا کد
+    return True
+
+def mkdir_handler():
+    pass
 
 
 
 
 class cd:
-    """Context manager for changing the current working directory"""
     def __init__(self, newPath):
         self.newPath = os.path.expanduser(newPath)
 
