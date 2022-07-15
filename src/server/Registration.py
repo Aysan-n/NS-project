@@ -1,7 +1,7 @@
 import rsa
 import random
 
-from server.Client_table import add_client, table_contains
+from server.Client_table import add_client, table_contains_client
 
 
 def receive_registration(messaging, connection, message, private_key):
@@ -15,7 +15,7 @@ def receive_registration(messaging, connection, message, private_key):
         message = bytes.fromhex(message)
         message = rsa.decrypt(message, private_key).decode()
         messages = str.split(message)
-        if table_contains(messages[2]):
+        if table_contains_client(messages[2]):
             server_message = {'message_type': 'registration', 'status': 'failed'}
             messaging.send_message(server_message, connection)
         else:
