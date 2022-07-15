@@ -4,6 +4,7 @@ from seq_number_enc_dec import seq_Decryption
 import datetime
 import os
 import subprocess
+import re
 def server_command_handler(client_message):
     client_user_name=client_message['client_user_name']
     record=find_auth_user(client_user_name)
@@ -113,6 +114,57 @@ def mkdir_handler(cwd_total,client_message):
         path=path[1:]
     with cd(cwd_total):
         return os.makedirs(path)
+def rm_handler(cwd_total,client_message):
+    path=client_message['path']
+    if path[0]=='/':
+        path=path[1:]
+    path=os.path.join(cwd_total,path)
+    path=path.replace('/','\\')
+    if client_message['command_flag']=='-r':
+        process=subprocess.Popen(['rmdir','/s','/q','%s' %path],shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        process.wait()
+        output,error=process.communicate()
+        if len(error)==0:
+            return False
+        else:
+            return True
+    try:
+        os.remove(path+'.txt')
+        return True
+    except:
+        return False
+
+def mv_handler(cwd_total,client_message):
+    access_path=client_message['access_path']
+    dest_path=client_message['dest_path']
+    if access_path[0]=='/':
+        access_path=access_path[1:]
+    if dest_path[0]=='/':
+        dest_path=dest_path[1:]    
+    access_path=os.path.join(cwd_total,access_path)
+    access_path=access_path.replace('/','\\')
+    dest_path_from_access_path=re.findall(r'(.*)\\\w+$',access_path)[0]
+    dest_path=os.path.join(dest_path_from_access_path,dest_path)
+    dest_path=dest_path.replace('/','\\')
+    if client_message['command_flag']=='-r':
+        try:
+            process=subprocess.Popen(['move','%s' %access_path,'%s' %dest_path],shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            process.wait()
+            output,error=process.communicate()
+            if len(error)==0:
+               return False
+            else:
+               return True
+        except:
+            return False
+    else:
+        pass
+
+
+
+
+
+
 
 
 
