@@ -131,7 +131,7 @@ def ls_handler(cwd_total, client_message):
     if len(error) != 0:
         return False  # دستور دچار خطا شد
     else:
-        pass  ########## خروجی رو درست کن سپس بفرست
+         print(output.decode())  ########## خروجی رو درست کن سپس بفرست
 
 
 def cd_handler(cwd_total, critical_path, client_message):
